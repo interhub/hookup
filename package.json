@@ -1,0 +1,54 @@
+{
+  "name": "hookup",
+  "version": "1.0.0",
+  "description": "new project-blog/messanger",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server/server.js",
+    "dev": "nodemon server/server.js",
+    "server": "webpack-dev-server",
+    "watch": "webpack --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/interhub/hookup.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/interhub/hookup/issues"
+  },
+  "homepage": "https://github.com/interhub/hookup#readme",
+  "dependencies": {
+    "@babel/core": "^7.9.0",
+    "@babel/preset-env": "^7.9.5",
+    "@babel/preset-react": "^7.9.4",
+    "babel": "^6.23.0",
+    "babel-core": "^6.26.3",
+    "babel-loader": "^8.1.0",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-react": "^6.24.1",
+    "body-parser": "^1.19.0",
+    "css-loader": "^3.5.2",
+    "express": "^4.17.1",
+    "express-ws": "^4.0.0",
+    "fs": "0.0.1-security",
+    "http": "0.0.1-security",
+    "jquery": "^3.5.0",
+    "mongodb": "^3.5.6",
+    "node-sass": "^4.13.1",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-redux": "^7.2.0",
+    "redux": "^4.0.5",
+    "sass-loader": "^8.0.2",
+    "style-loader": "^1.1.4",
+    "ws": "^7.2.3"
+  },
+  "devDependencies": {
+    "webpack": "^4.42.1",
+    "webpack-cli": "^3.3.11",
+    "webpack-dev-server": "^3.10.3"
+  }
+}

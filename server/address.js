@@ -1,0 +1,1 @@
+module.exports="mongodb+srv://stepan:338voenka@interhub-udazq.gcp.mongodb.net/test?retryWrites=true&w=majority";

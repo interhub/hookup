@@ -1,3 +1,36 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Slab&display=swap')
+@import "./config.sass"
+@import "./start.sass"
+
 
 body
     color: green
+    background: $store
+    font-family: $font1
+input
+    font-family: $font1
+
+*:focus
+    outline: none
+
+.btn_app
+    min-height: 30px
+    border: none
+    background: $dark
+    color: $light
+    border-radius: 1px
+    outline: none
+    margin-top: 3px
+    width: 100%
+    transition: background 0.3s ease
+    font-weight: 700
+.btn_app_box
+    width: 100%
+.w100
+    width: 100%
+.btn_app:hover
+    background: $light
+    color: $dark
+    border: 2px solid $dark
+    text-decoration: underline
+    cursor: pointer

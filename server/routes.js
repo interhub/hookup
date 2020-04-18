@@ -4,12 +4,7 @@ module.exports = (app) => {
     const {createServer} =require('http');
     const WebSocket = require("ws");
     const expressWs = require("express-ws")(app);
-    ///////
-    // const server=createServer(app);
-    // const wsServer=new WebSocket({server});
 
-
-////
     MongoClient.connect(address, (err, db) => {
         if (err) {
             console.error(err, "ERR MY CONNECT TO DB");
@@ -31,9 +26,6 @@ module.exports = (app) => {
 
         })
 
-        // wsServer.on("connection",(ws)=>{
-        //     ws.send("HEllo User!!!!!")
-        // })
 
         app.get('/', (req, res) => {
             res.sendFile(process.cwd() + "/index.html")

@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Slab&display=swap')
 @import "./config.sass"
 @import "./start.sass"
-
+@import "./loader.css"
 
 body
     color: green
@@ -34,3 +34,18 @@ input
     border: 2px solid $dark
     text-decoration: underline
     cursor: pointer
+#dialog
+    position: fixed
+    z-index: 1000
+    bottom: 20px
+    right: -550px
+    padding: 5px
+    max-width: 500px
+    max-height: 100px
+    min-height: 50px
+    min-width: 100px
+    background: $dark
+    color: $light
+    box-shadow: 0 0 4px 1px $dark
+.load_box
+    margin-top: 40vh

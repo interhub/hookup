@@ -1,12 +1,55 @@
 import React,{useState} from "react";
 import {Btn} from "./btn.jsx"
-import {store} from "../redux/redux.js";
+import store from "../redux/redux.js";
+import {dialog} from "./dialog.js";
 import $ from "JQuery";
-import { CLOSING } from "ws";
+import {Loader} from "./loader.jsx";
+import {ws} from "../socket/socket.js";
+//import { CLOSING } from "ws";
 
-const login=()=>{
-console.log("Loginin in")
+const login=(setState)=>{
+dialog("Loginin in")
 
+}
+const registr=(setState)=>{
+    var obj={};
+    for(var i=0;i<7;i++){
+        let txt=$(".start_form input").eq(i).val();
+        switch(i){
+            case 0:obj.fname=txt;break;
+            case 1:obj.sname=txt;break;
+            case 2:obj.mail=txt;break;
+            case 3:obj.sity=txt;break;
+            case 4:obj.login=txt;break;
+            case 5:obj.pass=txt;break;
+        }
+
+        if($(".start_form input").eq(i).val()==""){
+            return dialog("Заполните все поля")
+        }
+        if(i==6){
+            if(!/.(ru|com|su|org|io)$/.test($(".start_form input").eq(2).val())){
+                return dialog("Введите корректный почтовый адрес")
+             }
+            if($(".start_form input").eq(5).val()!=$(".start_form input").eq(6).val()){
+                return dialog("Пароли не совпадают")
+            }
+            //создание запроса на регистсрацию 
+            ws.addEventListener("message",(e)=>{
+                dialog(e.data)
+                store.dispatch({
+                    type:"LOADING",
+                    loading: false
+                })
+            })
+            ws.send("registr/"+JSON.stringify(obj))
+            store.dispatch({
+                type:"LOADING",
+                loading: true
+            })
+        }
+    }
+    
 }
 
 export const Start_login=(props)=>{
@@ -18,7 +61,7 @@ return <div className="start_login">
         <input type="text" name="login" placeholder="логин" className="login" /><br />
         <input type="password" name="pass" placeholder="пароль" className="login" />
         <div onClick={()=>{
-                login()
+                login(setState)
                 }} >
             <Btn text="Войти"  ></Btn>
         </div>
@@ -45,7 +88,7 @@ return <div className="start_login">
         <input type="password" name="pass" placeholder="пароль" className="login" /><br />
         <input type="password" name="pass" placeholder="пароль повтороно" className="login" />
         <div onClick={()=>{
-                login()
+                registr(setState)
                 }} >
             <Btn text="Войти"  ></Btn>
         </div>
@@ -57,6 +100,11 @@ return <div className="start_login">
         Назад
     </div>
 </div>
+}
+if(state="load"){
+    return <div className="load_box">
+        <Loader/>
+    </div>
 }
 
 }

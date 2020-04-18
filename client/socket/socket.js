@@ -1,4 +1,5 @@
-const ws = new WebSocket("ws://" + location.host + "/")
+import {dialog} from "../comps/dialog.js";
+export const ws = new WebSocket("ws://" + location.host + "/")
 var wsSend = function(data) {
     if(!ws.readyState){
         setTimeout(function (){
@@ -20,15 +21,15 @@ ws.onerror=(err)=>{
     console.log(err,"my err");
 }
 console.log("SOCKET location:", location.host, ws)
-ws.onmessage = (res) => {
-    console.log("RESPONSE WS:", res.data)
-    //использование данных data
-
-}
-// ws.onclose=()=>{
-//     console.log("WS CLOSE");
-//получение статуса оффлайн 
+// ws.onmessage = (res) => {
+//     console.log("RESPONSE WS:", res.data)
+//     //использование данных data
 
 // }
+ws.onclose=()=>{
+    dialog("Соединение с сервером поотеряно, обновите страницу",true);
+// получение статуса оффлайн 
+
+}
 
 

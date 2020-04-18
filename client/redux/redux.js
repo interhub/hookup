@@ -1,14 +1,17 @@
 import {createStore} from "redux";
 
-const state={
+var state={
     logined: false,
-    user:{}
+    user:{},
+    loading: false
 };
 
-const reduser=(state,action)=>{
+const reduser=(state, action)=>{
     switch(action.type){
-        case "LOGIN": return {...state,logined:true}
+        case "LOGIN": console.log("Login act");  return {...state, logined:action.logined };break;
+        case "LOADING": console.log("Loading change");  return {...state,loading:action.loading };break;
+        default: console.log("Не известное действие Redux"); return {...state};
     }
 }
-
-export const store=createStore(reduser);
+ var store=createStore(reduser, state);
+ export default store;

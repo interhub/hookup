@@ -11996,7 +11996,7 @@ exports = ___CSS_LOADER_API_IMPORT___(false);
 exports.push([module.i, "@import url(https://fonts.googleapis.com/css2?family=Roboto+Slab&display=swap);"]);
 exports.i(___CSS_LOADER_AT_RULE_IMPORT_0___);
 // Module
-exports.push([module.i, ".start_login{position:fixed;display:flex;justify-content:center;align-items:center;flex-direction:column;top:0;right:0;height:100%;width:30vw;padding:20px;z-index:100;background:#fdffe8;box-shadow:-3px 0 7px 1px #487750;transition:all 0.4s ease;text-align:center}.start_login:hover{box-shadow:-5px 0 50px 20px #487750}.start_form{width:60%}.start_form input{width:100%;margin-top:3px;min-height:20px;border:2px solid #487750;font-weight:400}.reg_btn{margin-top:20px}.start_back{margin-top:100px;color:#487750;text-decoration:underline;font-weight:800;cursor:pointer}body{color:green;background:#94ff86;font-family:\"Roboto Slab\",serif}input{font-family:\"Roboto Slab\",serif}*:focus{outline:none}.btn_app{min-height:30px;border:none;background:#487750;color:#fdffe8;border-radius:1px;outline:none;margin-top:3px;width:100%;transition:background 0.3s ease;font-weight:700}.btn_app_box{width:100%}.w100{width:100%}.btn_app:hover{background:#fdffe8;color:#487750;border:2px solid #487750;text-decoration:underline;cursor:pointer}#dialog{position:fixed;z-index:1000;bottom:20px;right:-550px;padding:5px;max-width:500px;max-height:100px;min-height:50px;min-width:100px;background:#487750;color:#fdffe8;box-shadow:0 0 4px 1px #487750}.load_box{margin-top:40vh}\n", ""]);
+exports.push([module.i, ".start_login{position:fixed;display:flex;justify-content:center;align-items:center;flex-direction:column;top:0;right:0;height:100%;width:30vw;padding:20px;z-index:100;background:#fdffe8;box-shadow:-3px 0 7px 1px #487750;transition:all 0.4s ease;text-align:center}.start_login:hover{box-shadow:-5px 0 50px 20px #487750}.start_form{width:60%}.start_form input{width:100%;margin-top:3px;min-height:20px;border:2px solid #487750;font-weight:400}.reg_btn{margin-top:20px}.start_back{margin-top:100px;color:#487750;text-decoration:underline;font-weight:800;cursor:pointer}.user_page{width:70%;margin:0 auto}.out_btn{position:fixed;top:10px;right:10px;max-width:100px;box-shadow:-1px 1px 2px 0.5px #fdffe8}.user_info_top,.user_info_down{margin:10px;background:#fdffe8;padding:10px;display:flex;justify-content:space-between}.avata_box{width:200px;height:200px;outline:1px solid #487750;cursor:pointer}.avatar_img{max-width:100%;max-height:100%}.avatar_img:hover{filter:brightness(80%)}.info_header{display:flex;flex-direction:column;justify-content:space-between;text-align:justify;height:200px}.info_items{list-style:none}body{color:green;background:#94ff86;font-family:\"Roboto Slab\",serif}input{font-family:\"Roboto Slab\",serif}*:focus{outline:none}.btn_app{min-height:30px;border:none;background:#487750;color:#fdffe8;border-radius:1px;outline:none;margin-top:3px;width:100%;transition:background 0.3s ease;font-weight:700}.btn_app_box{width:100%}.w100{width:100%}.btn_app:hover{background:#fdffe8;color:#487750;border:2px solid #487750;text-decoration:underline;cursor:pointer}#dialog{position:fixed;z-index:1000;bottom:20px;right:-550px;padding:5px;max-width:500px;max-height:100px;min-height:50px;min-width:100px;background:#487750;color:#fdffe8;box-shadow:0 0 4px 1px #487750}.load_box{margin-top:40vh}\n", ""]);
 // Exports
 module.exports = exports;
 
@@ -12769,14 +12769,15 @@ if (false) {}
 
 
 var redux_state={
-    logined: false,
-    user:{},
+    key:localStorage.key|| 0,
+    logined: localStorage.getItem("logined")|| false,
+    user:localStorage.getItem("user")?JSON.parse(localStorage.getItem("user")):{},
     loading: false
 };
 
 const reduser=(state, action)=>{
     switch(action.type){
-        case "LOGIN": console.log("Login act");  return {...state, logined:action.logined };break;
+        case "LOGIN": console.log("Login act");  return {...state, logined:action.logined, user:action.user };break;
         case "LOADING": console.log("Loading change");  return {...state,loading:action.loading };break;
         default: console.log("Не известное действие Redux"); return {...state};
     }
@@ -12796,6 +12797,8 @@ function _iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(
 
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
 
 
 
@@ -12805,7 +12808,61 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
  //import { CLOSING } from "ws";
 
 var start_login_login = function login(setState) {
-  dialog("Loginin in");
+  var obj = {};
+
+  for (var i = 0; i < 2; i++) {
+    var txt = jquery_default()(".start_form input").eq(i).val();
+
+    switch (i) {
+      case 0:
+        obj.login = txt;
+
+      case 1:
+        obj.pass = txt;
+    }
+  }
+
+  ws.send("#login/" + JSON.stringify(obj)); //создание запроса на вход 
+
+  var bool = true;
+  ws.addEventListener("message", function (e) {
+    if (bool) {
+      bool = false;
+      redux.dispatch({
+        type: "LOADING",
+        loading: false
+      });
+    } //условие выдачи уведомления
+
+
+    if (e.data.includes("#ERR/")) {
+      console.log("PASS NOT");
+      return dialog(e.data.replace(/^\#ERR\//, ""));
+    }
+
+    var txt = e.data;
+
+    if (/\{/.test(txt)) {
+      var msg = JSON.parse(txt);
+
+      if (typeof msg.key == "number") {
+        console.log("YOU", msg);
+        localStorage.setItem("key", msg.key);
+        localStorage.logined = true;
+        localStorage.setItem("user", txt);
+        console.log("key is SET");
+        return redux.dispatch({
+          type: "LOGIN",
+          user: msg,
+          logined: true
+        });
+      }
+    }
+  });
+  redux.dispatch({
+    type: "LOADING",
+    loading: true
+  });
 };
 
 var start_login_registr = function registr(setState) {
@@ -12845,27 +12902,40 @@ var start_login_registr = function registr(setState) {
     }
 
     if (i == 6) {
-      if (!/.(ru|com|su|org|io)$/.test(jquery_default()(".start_form input").eq(2).val())) {
-        return dialog("Введите корректный почтовый адрес");
-      }
+      var _ret = function () {
+        if (!/.(ru|com|su|org|io)$/.test(jquery_default()(".start_form input").eq(2).val())) {
+          return {
+            v: dialog("Введите корректный почтовый адрес")
+          };
+        }
 
-      if (jquery_default()(".start_form input").eq(5).val() != jquery_default()(".start_form input").eq(6).val()) {
-        return dialog("Пароли не совпадают");
-      } //создание запроса на регистсрацию 
+        if (jquery_default()(".start_form input").eq(5).val() != jquery_default()(".start_form input").eq(6).val()) {
+          return {
+            v: dialog("Пароли не совпадают")
+          };
+        }
 
+        var bool = true; //создание запроса на регистсрацию 
 
-      ws.addEventListener("message", function (e) {
-        dialog(e.data);
+        ws.addEventListener("message", function (e) {
+          if (bool) {
+            dialog(e.data);
+            redux.dispatch({
+              type: "LOADING",
+              loading: false
+            });
+          }
+
+          bool = false;
+        });
+        ws.send("#registr/" + JSON.stringify(obj));
         redux.dispatch({
           type: "LOADING",
-          loading: false
+          loading: true
         });
-      });
-      ws.send("registr/" + JSON.stringify(obj));
-      redux.dispatch({
-        type: "LOADING",
-        loading: true
-      });
+      }();
+
+      if (_typeof(_ret) === "object") return _ret.v;
     }
   }
 };
@@ -12887,11 +12957,13 @@ var start_login_Start_login = function Start_login(props) {
       type: "text",
       name: "login",
       placeholder: "\u043B\u043E\u0433\u0438\u043D",
+      id: "login",
       className: "login"
     }), /*#__PURE__*/react_default.a.createElement("br", null), /*#__PURE__*/react_default.a.createElement("input", {
       type: "password",
       name: "pass",
       placeholder: "\u043F\u0430\u0440\u043E\u043B\u044C",
+      id: "pass",
       className: "login"
     }), /*#__PURE__*/react_default.a.createElement("div", {
       onClick: function onClick() {
@@ -12973,6 +13045,44 @@ var start_login_Start_login = function Start_login(props) {
     }, /*#__PURE__*/react_default.a.createElement(loader_Loader, null));
   }
 };
+// CONCATENATED MODULE: ./client/comps/user_page.jsx
+
+
+
+var user_page_User_page = function User_page(props) {
+  var user = redux.getState().user;
+  return /*#__PURE__*/react_default.a.createElement("div", {
+    className: "user_page"
+  }, /*#__PURE__*/react_default.a.createElement("div", {
+    className: "my_page"
+  }, /*#__PURE__*/react_default.a.createElement("button", {
+    className: "btn_app out_btn",
+    onClick: function onClick() {
+      localStorage.clear();
+      window.location = location;
+    }
+  }, "\u0412\u044B\u0439\u0442\u0438"), /*#__PURE__*/react_default.a.createElement("div", {
+    className: "user_info"
+  }, /*#__PURE__*/react_default.a.createElement("div", {
+    className: "user_info_top"
+  }, /*#__PURE__*/react_default.a.createElement("div", {
+    className: "avata_box"
+  }, /*#__PURE__*/react_default.a.createElement("img", {
+    src: location.origin + "".concat(user.avatar == "" ? "/client/imgs/user.jpg" : user.avatar),
+    alt: user.fname,
+    className: "avatar_img"
+  })), /*#__PURE__*/react_default.a.createElement("div", {
+    className: "info_header"
+  }, /*#__PURE__*/react_default.a.createElement("h1", {
+    className: "info_name"
+  }, user.fname, " ", user.sname), /*#__PURE__*/react_default.a.createElement("p", {
+    className: "info_contacts"
+  }, "\u043F\u043E\u0447\u0442\u0430: ", user.mail, /*#__PURE__*/react_default.a.createElement("br", null), "\u0433\u043E\u0440\u043E\u0434: ", user.sity))), /*#__PURE__*/react_default.a.createElement("div", {
+    className: "user_info_down"
+  }, /*#__PURE__*/react_default.a.createElement("ul", {
+    className: "info_items"
+  }, /*#__PURE__*/react_default.a.createElement("li", null, "\u0421\u043E\u043E\u0431\u0449\u0435\u043D\u0438\u044F"), /*#__PURE__*/react_default.a.createElement("li", null, "\u0414\u0440\u0443\u0437\u044C\u044F"), /*#__PURE__*/react_default.a.createElement("li", null, "\u041D\u0430\u0439\u0442\u0438 \u0434\u0440\u0443\u0437\u0435\u0439"), /*#__PURE__*/react_default.a.createElement("li", null, "\u0418\u043D\u0444\u043E\u0440\u043C\u0430\u0446\u0438\u044F \u043E \u043F\u0440\u0438\u043B\u043E\u0436\u0435\u043D\u0438\u0438"))))));
+};
 // CONCATENATED MODULE: ./client/comps/app.jsx
 function app_slicedToArray(arr, i) { return app_arrayWithHoles(arr) || app_iterableToArrayLimit(arr, i) || app_unsupportedIterableToArray(arr, i) || app_nonIterableRest(); }
 
@@ -12990,22 +13100,37 @@ function app_arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 
 
+
 var app_App = function App(props) {
+  //состояние загрузки 
   var _useState = Object(react["useState"])(false),
       _useState2 = app_slicedToArray(_useState, 2),
       loading = _useState2[0],
-      setLoad = _useState2[1];
+      setLoad = _useState2[1]; //состояние авторизации
+
+
+  var _useState3 = Object(react["useState"])(redux.getState().logined),
+      _useState4 = app_slicedToArray(_useState3, 2),
+      logined = _useState4[0],
+      setLogin = _useState4[1];
 
   redux.subscribe(function () {
     setLoad(redux.getState().loading);
+    setLogin(redux.getState().logined);
   });
 
   if (loading) {
     return /*#__PURE__*/react_default.a.createElement("div", {
       className: "load_box"
     }, /*#__PURE__*/react_default.a.createElement(loader_Loader, null));
-  } else {
+  }
+
+  if (!loading && !logined) {
     return /*#__PURE__*/react_default.a.createElement(start_login_Start_login, null);
+  }
+
+  if (logined) {
+    return /*#__PURE__*/react_default.a.createElement(user_page_User_page, null);
   }
 };
 // EXTERNAL MODULE: ./client/styles/app.sass

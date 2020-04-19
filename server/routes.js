@@ -23,10 +23,10 @@ module.exports = (app) => {
                 console.log("WS NEW MESSAGE: ", msg)
                 //условие оработки роута сокета
                 switch (msg.replace(/\/.*/, "")) {
-                    case "registr":
+                    case "#registr":
                         console.log("REGISTR");
 
-                        var newuser = JSON.parse(msg.replace("registr/", ""));
+                        var newuser = JSON.parse(msg.replace("#registr/", ""));
 
                         client.db("hookup").collection("users").find({
                             login: newuser.login
@@ -72,9 +72,27 @@ module.exports = (app) => {
                                 ws.send("Пользователь с таким логином уже существует, попробуйте другой")
                             }
                         }); break;
-                        case "all": expressWs.getWss().clients.forEach(us => {
+                        case "#ALL": expressWs.getWss().clients.forEach(us => {
                             us.send(msg)
                         });break;
+
+                        case "#login": console.log("LOGIN IN");
+                        var logger=JSON.parse(msg.replace("#login/", ""));
+                        console.log(logger,"This LOGGER")
+                        client.db("hookup").collection("users").findOne({login:logger.login},(err,result)=>{
+                            if (err) {
+                                ws.send("Ошибка сервера");
+                                return console.log(err, "my err 1 (find user for hash)");
+                            } 
+                            if(result){
+                            if(result.pass==logger.pass){
+                              return  ws.send(JSON.stringify(result));
+                            }
+                            }
+                            console.log("PASS NOT RIGHT")
+                            ws.send("#ERR/Вход не удался, попробуйте еще");
+                            
+                        });break
 
                         default: console.log("Default case message")
                 }

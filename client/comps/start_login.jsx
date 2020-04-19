@@ -8,11 +8,58 @@ import {ws} from "../socket/socket.js";
 //import { CLOSING } from "ws";
 
 const login=(setState)=>{
-dialog("Loginin in")
+let obj={};
+for(var i=0;i<2;i++){
+    let txt=$(".start_form input").eq(i).val();
+    switch(i){
+        case 0:obj.login=txt;
+        case 1:obj.pass=txt;
+    }
+}
+    ws.send("#login/"+JSON.stringify(obj));
+    //создание запроса на вход 
+    let bool=true;
+    ws.addEventListener("message",(e)=>{
+        if(bool){
+            bool=false;
+        store.dispatch({
+            type:"LOADING",
+            loading: false
+        })
+    }
+    //условие выдачи уведомления
+    if(e.data.includes("#ERR/")){
+        console.log("PASS NOT")
+        return dialog(e.data.replace(/^\#ERR\//,""))
+    }
+
+    let txt=e.data
+    if(/\{/.test(txt)){
+    var msg=JSON.parse(txt);
+    
+    if((typeof msg.key)=="number"){
+        console.log("YOU",msg)
+        localStorage.setItem("key",msg.key);
+        localStorage.logined=true;
+        localStorage.setItem("user", txt)
+        console.log("key is SET")
+       return store.dispatch({
+            type: "LOGIN",
+            user: msg,
+            logined:true
+        })
+    }}
+    
+
+    })
+    store.dispatch({
+        type:"LOADING",
+        loading:true
+    })
 
 }
 const registr=(setState)=>{
-    var obj={};
+    let obj={};
     for(var i=0;i<7;i++){
         let txt=$(".start_form input").eq(i).val();
         switch(i){
@@ -34,15 +81,19 @@ const registr=(setState)=>{
             if($(".start_form input").eq(5).val()!=$(".start_form input").eq(6).val()){
                 return dialog("Пароли не совпадают")
             }
+            let bool=true;
             //создание запроса на регистсрацию 
             ws.addEventListener("message",(e)=>{
+                if(bool){
                 dialog(e.data)
                 store.dispatch({
                     type:"LOADING",
                     loading: false
                 })
+            }
+            bool=false;
             })
-            ws.send("registr/"+JSON.stringify(obj))
+            ws.send("#registr/"+JSON.stringify(obj))
             store.dispatch({
                 type:"LOADING",
                 loading: true
@@ -58,8 +109,8 @@ if(state=="login"){
 return <div className="start_login">
     <h3 className="start_title">Войдите в аккаунт</h3>
     <div className="start_form">
-        <input type="text" name="login" placeholder="логин" className="login" /><br />
-        <input type="password" name="pass" placeholder="пароль" className="login" />
+        <input type="text" name="login" placeholder="логин" id="login" className="login" /><br />
+        <input type="password" name="pass" placeholder="пароль" id="pass" className="login" />
         <div onClick={()=>{
                 login(setState)
                 }} >

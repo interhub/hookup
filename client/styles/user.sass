@@ -14,11 +14,13 @@
     display: flex
     justify-content: space-between
     //align-items: start
+.user_info_down
+    min-height: 400px
 $h_info: 200px
 .avata_box
     width: $h_info
     height: $h_info
-    outline: 1px solid $dark
+    outline: 1px solid $store
     cursor: pointer
     
 .avatar_img
@@ -32,5 +34,14 @@ $h_info: 200px
     justify-content: space-between
     text-align: justify
     height: $h_info
+.info_name
+    font-size: $fs * 2.6
+    border-bottom: 1px solid $store
 .info_items
-    list-style: none
+    list-style: none 
+    font-size: $fs * 1.4
+.info_items li 
+    cursor: pointer
+    margin: 20px
+    font-weight: 500
+    border-bottom: 1px solid $store

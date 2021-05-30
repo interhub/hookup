@@ -44,7 +44,7 @@
     "redux": "^4.0.5",
     "sass-loader": "^8.0.2",
     "style-loader": "^1.1.4",
-    "ws": "^7.2.3"
+    "ws": "^7.4.6"
   },
   "devDependencies": {
     "webpack": "^4.42.1",
